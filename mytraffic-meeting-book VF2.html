@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyTraffic · Meeting Book</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0f13;
+    --paper: #f7f5f0;
+    --white: #ffffff;
+    --accent: #1a56ff;
+    --accent-light: #e8edff;
+    --green: #00a67e;
+    --green-light: #e6f7f3;
+    --amber: #f59e0b;
+    --amber-light: #fef3c7;
+    --red: #ef4444;
+    --border: #e2ddd6;
+    --muted: #888077;
+    --tag-bg: #eeece8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    padding: 40px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* COVER HEADER */
+  .book-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 40px;
+    padding-bottom: 28px;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .book-title-block {}
+
+  .book-eyebrow {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+
+  .book-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .book-title span { color: var(--accent); }
+
+  .book-meta {
+    text-align: right;
+  }
+
+  .event-badge {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--white);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .book-date {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* SUMMARY BAR */
+  .summary-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 40px;
+    padding: 18px 20px;
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+  }
+
+  .summary-item {
+    flex: 1;
+    text-align: center;
+    padding: 0 12px;
+    border-right: 1px solid var(--border);
+  }
+  .summary-item:last-child { border-right: none; }
+
+  .summary-num {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .summary-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 500;
+  }
+
+  /* SECTION TITLE */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 36px 0 20px;
+  }
+
+  .section-divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .section-divider-label {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* MEETING CARD */
+  .meeting-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    page-break-inside: avoid;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: stretch;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card-timeslot {
+    background: var(--ink);
+    color: var(--white);
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 90px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .time-val {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+
+  .time-dur {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .card-identity {
+    flex: 1;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .contact-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent);
+    overflow: hidden;
+  }
+
+  .contact-avatar img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .contact-info { flex: 1; }
+
+  .contact-name {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 2px;
+  }
+
+  .contact-role {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .contact-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .link-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--tag-bg);
+    border-radius: 4px;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.15s;
+  }
+
+  .link-tag:hover { background: var(--accent-light); color: var(--accent); }
+  .link-tag.linkedin { background: #e8f0fe; color: #1a56ff; }
+
+  .card-status {
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .status-pill.confirmed { background: var(--green-light); color: var(--green); }
+  .status-pill.pending   { background: var(--amber-light); color: var(--amber); }
+  .status-pill.prospect  { background: var(--accent-light); color: var(--accent); }
+  .status-pill.client    { background: var(--green-light); color: var(--green); }
+
+  .sales-owner {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* CARD BODY */
+  .card-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0;
+  }
+
+  .card-section {
+    padding: 16px 18px;
+    border-right: 1px solid var(--border);
+  }
+  .card-section:last-child { border-right: none; }
+
+  .cs-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .company-name {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .company-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 8px;
+  }
+
+  .tag {
+    background: var(--tag-bg);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .tag.sector { background: var(--accent-light); color: var(--accent); }
+  .tag.size   { background: var(--tag-bg); }
+  .tag.revenue{ background: var(--green-light); color: var(--green); }
+
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 5px;
+  }
+
+  .info-key {
+    font-size: 11px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  .info-val {
+    font-size: 12px;
+    font-weight: 500;
+    text-align: right;
+  }
+
+  .history-item {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+    align-items: flex-start;
+  }
+
+  .history-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  .history-text {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+
+  .history-date {
+    font-size: 10px;
+    color: var(--muted);
+  }
+
+  .context-text {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--ink);
+    font-style: italic;
+  }
+
+  .context-goal {
+    margin-top: 10px;
+    padding: 8px 10px;
+    background: var(--accent-light);
+    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+  }
+
+  /* CARD FOOTER — notes */
+  .card-footer {
+    border-top: 1px dashed var(--border);
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .notes-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+
+  .notes-line {
+    flex: 1;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--border) 0, var(--border) 6px, transparent 6px, transparent 12px);
+  }
+
+  /* PRINT */
+  @media print {
+    body { padding: 20px; background: white; }
+    .meeting-card { page-break-inside: avoid; }
+  }
+
+  /* Add button */
+  .add-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 16px;
+    background: transparent;
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 40px;
+  }
+  .add-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+  /* MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(14,15,19,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 620px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 32px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+  }
+
+  .modal-title {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+  }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-full { grid-column: 1 / -1; }
+
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+
+  .form-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .form-input, .form-select, .form-textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    background: var(--paper);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 9px 12px;
+    color: var(--ink);
+    transition: border-color 0.15s;
+    outline: none;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--accent);
+    background: var(--white);
+  }
+  .form-textarea { resize: vertical; min-height: 70px; }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .btn-cancel {
+    padding: 10px 20px;
+    background: var(--tag-bg);
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--ink);
+  }
+
+  .btn-save {
+    padding: 10px 24px;
+    background: var(--ink);
+    border: none;
+    border-radius: 8px;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+
+  .btn-save:hover { background: var(--accent); }
+
+  @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform:none; } }
+  .meeting-card { animation: fadeIn 0.3s ease both; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="book-header">
+  <div class="book-title-block">
+    <div class="book-eyebrow">MyTraffic · Sales Enablement</div>
+    <div class="book-title">Meeting<br><span>Book</span></div>
+  </div>
+  <div class="book-meta">
+    <div class="event-badge" id="event-name-display">✏️ Nom de l'événement</div>
+    <div class="book-date" id="event-date-display">Date · Lieu</div>
+    <div style="margin-top:10px;">
+      <button onclick="openEventEditor()" style="font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 12px;background:var(--tag-bg);border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--muted);">✏️ Modifier l'événement</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY BAR -->
+<div class="summary-bar">
+  <div class="summary-item">
+    <div class="summary-num" id="count-total">0</div>
+    <div class="summary-label">RDV total</div>
+  </div>
+  <div class="summary-item">
+    <div class="summary-num" id="count-confirmed" style="color:var(--green)">0</div>
+    <div class="summary-label">Confirmés</div>
+  </div>
+  <div class="summary-item">
+    <div class="summary-num" id="count-pending" style="color:var(--amber)">0</div>
+    <div class="summary-label">En attente</div>
+  </div>
+  <div class="summary-item">
+    <div class="summary-num" id="count-prospects" style="color:var(--accent)">0</div>
+    <div class="summary-label">Prospects</div>
+  </div>
+  <div class="summary-item">
+    <div class="summary-num" id="count-clients" style="color:var(--green)">0</div>
+    <div class="summary-label">Clients</div>
+  </div>
+</div>
+
+<!-- MEETINGS LIST -->
+<div class="section-divider">
+  <div class="section-divider-line"></div>
+  <div class="section-divider-label">Programme des RDV</div>
+  <div class="section-divider-line"></div>
+</div>
+
+<div id="meetings-container"></div>
+
+<button class="add-btn" onclick="openModal()">
+  + Ajouter un RDV
+</button>
+
+<!-- MODAL FORM -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">➕ Nouveau RDV</div>
+    <div class="form-grid">
+
+      <div class="form-group">
+        <label class="form-label">Heure du RDV</label>
+        <input class="form-input" type="time" id="f-time" value="10:00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Durée (min)</label>
+        <input class="form-input" type="number" id="f-duration" value="30" min="15" step="15">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Prénom Nom du contact</label>
+        <input class="form-input" type="text" id="f-name" placeholder="Marie Dupont">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Poste</label>
+        <input class="form-input" type="text" id="f-role" placeholder="Head of Retail">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">LinkedIn URL</label>
+        <input class="form-input" type="url" id="f-linkedin" placeholder="https://linkedin.com/in/...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Photo URL (optionnel)</label>
+        <input class="form-input" type="url" id="f-photo" placeholder="https://...">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Entreprise</label>
+        <input class="form-input" type="text" id="f-company" placeholder="Carrefour">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Secteur</label>
+        <input class="form-input" type="text" id="f-sector" placeholder="Retail, Immobilier...">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Taille entreprise</label>
+        <select class="form-select" id="f-size">
+          <option>1–10</option>
+          <option>10–50</option>
+          <option>50–200</option>
+          <option>200–1000</option>
+          <option selected>1000+</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">CA estimé</label>
+        <input class="form-input" type="text" id="f-revenue" placeholder="ex: >100M€">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Sales owner</label>
+        <input class="form-input" type="text" id="f-sales" placeholder="Jean Martin">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Statut</label>
+        <select class="form-select" id="f-status">
+          <option value="confirmed">✅ Confirmé</option>
+          <option value="pending">⏳ En attente</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Type de relation</label>
+        <select class="form-select" id="f-relation">
+          <option value="prospect">Prospect</option>
+          <option value="client">Client</option>
+        </select>
+      </div>
+
+      <div class="form-group form-full">
+        <label class="form-label">Historique avec MyTraffic</label>
+        <textarea class="form-textarea" id="f-history" placeholder="Ex: Demo réalisée en oct 2024, intéressé par le module Analytics..."></textarea>
+      </div>
+
+      <div class="form-group form-full">
+        <label class="form-label">Contexte & objectif du RDV</label>
+        <textarea class="form-textarea" id="f-context" placeholder="Ex: Veut comprendre comment exploiter la data traffic pour ses arbitrages immobiliers..."></textarea>
+      </div>
+
+      <div class="form-group form-full">
+        <label class="form-label">Objectif principal du meeting</label>
+        <input class="form-input" type="text" id="f-goal" placeholder="Ex: Qualifier le besoin et proposer un POC">
+      </div>
+
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+      <button class="btn-save" onclick="saveMeeting()">Ajouter au book →</button>
+    </div>
+  </div>
+</div>
+
+<!-- EVENT EDITOR MODAL -->
+<div class="modal-overlay" id="event-modal">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-title">✏️ Informations événement</div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="form-group">
+        <label class="form-label">Nom de l'événement</label>
+        <input class="form-input" id="ev-name" placeholder="Viva Technology 2026">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="ev-date" placeholder="11–13 Juin 2026">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Lieu</label>
+        <input class="form-input" id="ev-location" placeholder="Paris Expo Porte de Versailles">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEventEditor()">Annuler</button>
+      <button class="btn-save" onclick="saveEvent()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const APPS_SCRIPT_URL = "https://script.google.com/a/macros/mytraffic.fr/s/AKfycby0wD4-iMsY5OooF7BQQm9V_JJKtFzyrZ6A2Sq9OWKokKA5lwcv8E5XIZBrnv-vINs/exec";
+
+  let meetings = [];
+  let editingIdx = null;
+
+  // ─── API HELPERS ───────────────────────────────────────────────
+  async function apiCall(body) {
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      body: JSON.stringify(body)
+    });
+    return res.json();
+  }
+
+  async function loadFromSheet() {
+    const container = document.getElementById('meetings-container');
+    container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);font-size:14px;">⏳ Chargement des RDV…</div>';
+    try {
+      const data = await apiCall({ action: "getAll" });
+      if (data.error) throw new Error(data.error);
+      meetings = data.meetings.map(m => ({
+        rowIndex: m.rowIndex,
+        time:     m.time     || '',
+        duration: parseInt(m.duration) || 30,
+        name:     m.name     || '',
+        role:     m.role     || '',
+        photo:    m.photo    || '',
+        linkedin: m.linkedin || '',
+        company:  m.company  || '',
+        sector:   m.sector   || '',
+        size:     m.size     || '',
+        revenue:  m.revenue  || '',
+        sales:    m.sales    || '',
+        status:   m.status   || 'confirmed',
+        relation: m.relation || 'prospect',
+        history:  m.history  || '',
+        context:  m.context  || '',
+        goal:     m.goal     || '',
+      }));
+      renderMeetings();
+    } catch(e) {
+      container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--red);font-size:14px;">❌ Impossible de charger le Google Sheet.<br><small>${e.message}</small></div>`;
+    }
+  }
+
+  // ─── UTILS ────────────────────────────────────────────────────
+  function initials(name) {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
+  }
+
+  // ─── RENDER ───────────────────────────────────────────────────
+  function renderMeetings() {
+    const container = document.getElementById('meetings-container');
+    container.innerHTML = '';
+    const sorted = [...meetings].sort((a, b) => a.time.localeCompare(b.time));
+    sorted.forEach((m, i) => {
+      const idx = meetings.indexOf(m);
+      const statusLabel = m.status === 'confirmed' ? '✅ Confirmé' : '⏳ En attente';
+      const statusClass = m.status === 'confirmed' ? 'confirmed' : 'pending';
+      const relationLabel = m.relation === 'client' ? '🟢 Client' : '🔵 Prospect';
+      const relationClass = m.relation;
+      const avatarContent = m.photo
+        ? `<img src="${m.photo}" alt="${m.name}" onerror="this.style.display='none';this.parentNode.innerHTML='${initials(m.name)}'">`
+        : initials(m.name);
+      const linkedinBtn = m.linkedin
+        ? `<a href="${m.linkedin}" target="_blank" class="link-tag linkedin">🔗 LinkedIn</a>`
+        : '';
+      const card = document.createElement('div');
+      card.className = 'meeting-card';
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="card-timeslot">
+            <div class="time-val">${m.time}</div>
+            <div class="time-dur">${m.duration} min</div>
+          </div>
+          <div class="card-identity">
+            <div class="contact-avatar">${avatarContent}</div>
+            <div class="contact-info">
+              <div class="contact-name">${m.name}</div>
+              <div class="contact-role">${m.role} · ${m.company}</div>
+              <div class="contact-links">
+                ${linkedinBtn}
+                <span class="link-tag">${m.company}</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-status">
+            <span class="status-pill ${statusClass}">${statusLabel}</span>
+            <span class="status-pill ${relationClass}">${relationLabel}</span>
+            <div class="sales-owner">👤 ${m.sales}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-section">
+            <div class="cs-label">🏢 Entreprise</div>
+            <div class="company-name">${m.company}</div>
+            <div class="company-tags">
+              <span class="tag sector">${m.sector}</span>
+              <span class="tag size">${m.size} emp.</span>
+              <span class="tag revenue">${m.revenue}</span>
+            </div>
+          </div>
+          <div class="card-section">
+            <div class="cs-label">🕐 Historique MyTraffic</div>
+            <div class="history-item">
+              <div class="history-dot"></div>
+              <div class="history-text">${m.history}</div>
+            </div>
+          </div>
+          <div class="card-section">
+            <div class="cs-label">🎯 Contexte & Objectif</div>
+            <div class="context-text">${m.context}</div>
+            ${m.goal ? `<div class="context-goal">🏁 ${m.goal}</div>` : ''}
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="notes-label">Notes sales</span>
+          <div class="notes-line"></div>
+          <button onclick="openEditModal(${idx})" style="font-size:11px;background:none;border:1px solid var(--border);border-radius:5px;cursor:pointer;color:var(--accent);padding:3px 10px;font-weight:600;font-family:'DM Sans',sans-serif;">✏️ Modifier</button>
+          <button onclick="deleteMeeting(${idx})" style="font-size:11px;background:none;border:none;cursor:pointer;color:var(--muted);padding:0 4px;" title="Supprimer">🗑</button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+    updateSummary();
+  }
+
+  function updateSummary() {
+    document.getElementById('count-total').textContent = meetings.length;
+    document.getElementById('count-confirmed').textContent = meetings.filter(m => m.status === 'confirmed').length;
+    document.getElementById('count-pending').textContent = meetings.filter(m => m.status === 'pending').length;
+    document.getElementById('count-prospects').textContent = meetings.filter(m => m.relation === 'prospect').length;
+    document.getElementById('count-clients').textContent = meetings.filter(m => m.relation === 'client').length;
+  }
+
+  // ─── ADD MODAL ────────────────────────────────────────────────
+  function openModal() {
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+  function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  async function saveMeeting() {
+    const name = document.getElementById('f-name').value.trim();
+    if (!name) { alert('Le nom du contact est obligatoire'); return; }
+    const btn = document.querySelector('#modal-overlay .btn-save');
+    btn.textContent = '⏳ Enregistrement…';
+    btn.disabled = true;
+    const meeting = {
+      time: document.getElementById('f-time').value,
+      duration: document.getElementById('f-duration').value,
+      name,
+      role: document.getElementById('f-role').value,
+      photo: document.getElementById('f-photo').value,
+      linkedin: document.getElementById('f-linkedin').value,
+      company: document.getElementById('f-company').value,
+      sector: document.getElementById('f-sector').value,
+      size: document.getElementById('f-size').value,
+      revenue: document.getElementById('f-revenue').value,
+      sales: document.getElementById('f-sales').value,
+      status: document.getElementById('f-status').value,
+      relation: document.getElementById('f-relation').value,
+      history: document.getElementById('f-history').value,
+      context: document.getElementById('f-context').value,
+      goal: document.getElementById('f-goal').value,
+    };
+    try {
+      await apiCall({ action: "add", meeting });
+      closeModal();
+      ['f-name','f-role','f-photo','f-linkedin','f-company','f-sector','f-revenue','f-sales','f-history','f-context','f-goal'].forEach(id => document.getElementById(id).value = '');
+      await loadFromSheet();
+    } catch(e) {
+      alert(`Erreur lors de l'enregistrement : ` + e.message);
+    } finally {
+      btn.textContent = 'Ajouter au book →';
+      btn.disabled = false;
+    }
+  }
+
+  // ─── EDIT MODAL ───────────────────────────────────────────────
+  function openEditModal(idx) {
+    editingIdx = idx;
+    const m = meetings[idx];
+    document.getElementById('e-time').value = m.time;
+    document.getElementById('e-duration').value = m.duration;
+    document.getElementById('e-name').value = m.name;
+    document.getElementById('e-role').value = m.role;
+    document.getElementById('e-linkedin').value = m.linkedin || '';
+    document.getElementById('e-photo').value = m.photo || '';
+    document.getElementById('e-company').value = m.company;
+    document.getElementById('e-sector').value = m.sector;
+    document.getElementById('e-size').value = m.size;
+    document.getElementById('e-revenue').value = m.revenue;
+    document.getElementById('e-sales').value = m.sales;
+    document.getElementById('e-status').value = m.status;
+    document.getElementById('e-relation').value = m.relation;
+    document.getElementById('e-history').value = m.history;
+    document.getElementById('e-context').value = m.context;
+    document.getElementById('e-goal').value = m.goal;
+    document.getElementById('edit-modal-overlay').classList.add('open');
+  }
+  function closeEditModal() {
+    document.getElementById('edit-modal-overlay').classList.remove('open');
+    editingIdx = null;
+  }
+
+  async function saveEditMeeting() {
+    if (editingIdx === null) return;
+    const name = document.getElementById('e-name').value.trim();
+    if (!name) { alert('Le nom du contact est obligatoire'); return; }
+    const btn = document.querySelector('#edit-modal-overlay .btn-save');
+    btn.textContent = '⏳ Enregistrement…';
+    btn.disabled = true;
+    const meeting = {
+      time: document.getElementById('e-time').value,
+      duration: document.getElementById('e-duration').value,
+      name,
+      role: document.getElementById('e-role').value,
+      photo: document.getElementById('e-photo').value,
+      linkedin: document.getElementById('e-linkedin').value,
+      company: document.getElementById('e-company').value,
+      sector: document.getElementById('e-sector').value,
+      size: document.getElementById('e-size').value,
+      revenue: document.getElementById('e-revenue').value,
+      sales: document.getElementById('e-sales').value,
+      status: document.getElementById('e-status').value,
+      relation: document.getElementById('e-relation').value,
+      history: document.getElementById('e-history').value,
+      context: document.getElementById('e-context').value,
+      goal: document.getElementById('e-goal').value,
+    };
+    try {
+      await apiCall({ action: "update", rowIndex: meetings[editingIdx].rowIndex, meeting });
+      closeEditModal();
+      await loadFromSheet();
+    } catch(e) {
+      alert(`Erreur lors de la modification : ` + e.message);
+    } finally {
+      btn.textContent = 'Enregistrer →';
+      btn.disabled = false;
+    }
+  }
+
+  // ─── DELETE ───────────────────────────────────────────────────
+  async function deleteMeeting(idx) {
+    if (!confirm('Supprimer ce RDV ?')) return;
+    try {
+      await apiCall({ action: "delete", rowIndex: meetings[idx].rowIndex });
+      await loadFromSheet();
+    } catch(e) {
+      alert(`Erreur lors de la suppression : ` + e.message);
+    }
+  }
+
+  // ─── EVENT EDITOR ─────────────────────────────────────────────
+  function openEventEditor() {
+    document.getElementById('event-modal').classList.add('open');
+  }
+  function closeEventEditor() {
+    document.getElementById('event-modal').classList.remove('open');
+  }
+  function saveEvent() {
+    const name = document.getElementById('ev-name').value || 'Événement';
+    const date = document.getElementById('ev-date').value || '';
+    const loc  = document.getElementById('ev-location').value || '';
+    document.getElementById('event-name-display').textContent = name;
+    document.getElementById('event-date-display').textContent = [date, loc].filter(Boolean).join(' · ');
+    closeEventEditor();
+  }
+
+  loadFromSheet();
+</script>
+
+<!-- EDIT MEETING MODAL -->
+<div class="modal-overlay" id="edit-modal-overlay">
+  <div class="modal">
+    <div class="modal-title">✏️ Modifier le RDV</div>
+    <div class="form-grid">
+      <div class="form-group"><label class="form-label">Heure</label><input class="form-input" type="time" id="e-time"></div>
+      <div class="form-group"><label class="form-label">Durée (min)</label><input class="form-input" type="number" id="e-duration" min="15" step="15"></div>
+      <div class="form-group"><label class="form-label">Nom du contact</label><input class="form-input" type="text" id="e-name"></div>
+      <div class="form-group"><label class="form-label">Poste</label><input class="form-input" type="text" id="e-role"></div>
+      <div class="form-group"><label class="form-label">LinkedIn URL</label><input class="form-input" type="url" id="e-linkedin"></div>
+      <div class="form-group"><label class="form-label">Photo URL</label><input class="form-input" type="url" id="e-photo"></div>
+      <div class="form-group"><label class="form-label">Entreprise</label><input class="form-input" type="text" id="e-company"></div>
+      <div class="form-group"><label class="form-label">Secteur</label><input class="form-input" type="text" id="e-sector"></div>
+      <div class="form-group"><label class="form-label">Taille</label><select class="form-select" id="e-size"><option>1–10</option><option>10–50</option><option>50–200</option><option>200–1000</option><option>1000+</option></select></div>
+      <div class="form-group"><label class="form-label">CA estimé</label><input class="form-input" type="text" id="e-revenue"></div>
+      <div class="form-group"><label class="form-label">Sales owner</label><input class="form-input" type="text" id="e-sales"></div>
+      <div class="form-group"><label class="form-label">Statut</label><select class="form-select" id="e-status"><option value="confirmed">✅ Confirmé</option><option value="pending">⏳ En attente</option></select></div>
+      <div class="form-group"><label class="form-label">Relation</label><select class="form-select" id="e-relation"><option value="prospect">Prospect</option><option value="client">Client</option></select></div>
+      <div class="form-group form-full"><label class="form-label">Historique MyTraffic</label><textarea class="form-textarea" id="e-history"></textarea></div>
+      <div class="form-group form-full"><label class="form-label">Contexte & objectif</label><textarea class="form-textarea" id="e-context"></textarea></div>
+      <div class="form-group form-full"><label class="form-label">Objectif principal</label><input class="form-input" type="text" id="e-goal"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEditModal()">Annuler</button>
+      <button class="btn-save" onclick="saveEditMeeting()">Enregistrer →</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
